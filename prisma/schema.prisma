@@ -1,0 +1,53 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL") // 确保你的 .env 文件中指定了正确的 DATABASE_URL
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Balances {
+  balance_id Int   @id @default(autoincrement())
+  user_add    String
+  contract   String
+  amount     String
+  bought_sol   String
+  average_price String
+  sold_sol String
+
+  @@unique([balance_id])
+}
+
+model Tokens {
+  token_id     Int   @id @default(autoincrement())
+  name         String
+  symbol       String   @unique
+  current_price Decimal  @db.Decimal(18, 8)
+  contract     String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  @@unique([token_id])
+}
+
+model Transactions {
+  transaction_id Int   @id @default(autoincrement())
+  user_id        Int
+  token_id       Int
+  transaction_type String @db.VarChar(10)
+  amount         Decimal  @db.Decimal(18, 8)
+  price          Decimal  @db.Decimal(18, 8)
+  transaction_date DateTime @default(now())
+
+  @@unique([transaction_id])
+}
+
+model Users {
+  user_id    Int   @id @default(autoincrement())
+  username   String   
+  address    String  @unique
+  m_sol    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
