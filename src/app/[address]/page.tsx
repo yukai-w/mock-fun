@@ -15,7 +15,6 @@ import {
   usePhantom,
   getRayTokenInfo,
   getRayTokenPrice,
-  getTokenList,
   getTokenInfoByRpc,
   calculatePercentageChange,
   toFixed,
@@ -40,7 +39,7 @@ type tokenDetail = {
 };
 
 const TokenDetailPage = ({ params }: { params: ParamsType }) => {
-  const { publicKey, isConnected, connectPhantom, disconnectPhantom, error } =
+  const { publicKey, isConnected, connectPhantom } =
     usePhantom();
 
   const [userInfo, setUserInfo] = useState({

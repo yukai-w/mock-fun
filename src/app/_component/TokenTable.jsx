@@ -72,26 +72,6 @@ const TokenTable = ({ address, solPrice }) => {
     getBalances();
   }, [address]);
 
-  const tokenData = [
-    {
-      tokenImage: 'https://example.com/image1.png',
-      tokenName: 'Token1',
-      bought: 100,
-      sold: 50,
-      worth: 5000,
-      profit: 200
-    },
-    {
-      tokenImage: 'https://example.com/image2.png',
-      tokenName: 'Token2',
-      bought: 200,
-      sold: 100,
-      worth: 10000,
-      profit: 500
-    }
-    // 可以继续添加其他 token 数据
-  ];
-
   return (
     <TableContainer component={Paper}>
       <Table>
