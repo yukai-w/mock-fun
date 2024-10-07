@@ -1,101 +1,132 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import { getRayTokenInfo, getTokenList } from "@/util";
+import {
+  Button,
+  Card,
+  CardContent,
+  Typography,
+  TextField
+} from "@mui/material";
 import Image from "next/image";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+  const getTokenListInit = async () => {
+    const result = await getTokenList();
+    setTokens([
+      ...result.data.mintList.slice(-20)
+    ]);
+  }
+  const [inputValue, setInputValue] = useState('');
+
+  const search = async () => {
+    const result = await getRayTokenInfo(inputValue);
+    const tokens = result?.data.length > 0 ? result?.data : [];
+    setTokens(tokens);
+  }
+
+  useEffect(() => {
+    getTokenListInit();
+  }, []);
+
+  // const buySubmit = async () => {
+  //   if (!inputValue || inputValue === '0') {
+  //     return;
+  //   }
+  //   const sol = new Decimal(inputValue);
+  //   const balance = new Decimal(userInfo.m_sol);
+  //   if (sol.gt(balance)) {
+  //     console.log(55);
+  //     Alert({
+  //       title: 'Error'
+  //     });
+  //   }
+  // }
+
+  const [tokens, setTokens] = useState([
+    { logoURI: 'https://via.placeholder.com/50', name: 'Token A', symbol: 'TKA', mcap: '$10B', address: '123' },
+    { logoURI: 'https://via.placeholder.com/50', name: 'Token B', symbol: 'TKB', mcap: '$5B', address: '123' },
+    { logoURI: 'https://via.placeholder.com/50', name: 'Token C', symbol: 'TKC', mcap: '$2B', address: '123' }
+  ]);
+
+  return (
+    // <div>
+    //   sol price
+    //   <h4>Sol: ${solPrice}</h4>
+    //   <div>
+    //     <h1>Phantom Wallet</h1>
+    //     <Button onClick={connectPhantom}>Connect Phantom Wallet</Button>
+    //     {isConnected && (
+    //       <>
+    //         <p>Connected Public Key: {publicKey}</p>
+    //         <p>Balance: {userInfo.m_sol} mSol</p>
+    //         <Button onClick={disconnectPhantom}>Disconnect</Button>
+    //       </>
+    //     )}
+    //     {error && <p className="caret-red-400">{error}</p>}
+    //   </div>
+    //   {/* search */}
+    //   <div>
+    //     <Input onChange={(e) => setContract(e.target.value)} value={contract} />
+    //     <Button onClick={searchContract} variant="contained">
+    //       Search
+    //     </Button>
+    //   </div>
+    //   {/* card show token detail */}
+    //   <Card sx={{ maxWidth: 345, margin: 2 }}>
+    //     <CardContent>
+    //       <Typography gutterBottom variant="h5" component="div">
+    //         <Image unoptimized width={60} height={60} alt="img" src={tokenDetail.logoURI} />{tokenDetail.name}
+    //       </Typography>
+    //       <Typography variant="body2" color="text.secondary">
+    //         Symbol: {tokenDetail.symbol}
+    //       </Typography>
+    //       <Typography variant="body2" color="text.secondary">
+    //         Price: {tokenDetail.price}
+    //       </Typography>
+    //     </CardContent>
+    //   </Card>
+    //   {/* buy & sell */}
+    //   <div>
+    //     <Input type="number" onChange={e => setInputValue(e.target.value)} value={inputValue} />
+    //     <Button onClick={buySubmit} variant="contained">
+    //       Buy
+    //     </Button>
+    //   </div>
+    // </div>
+    <div className="flex flex-col items-center justify-center bg-gray-100 p-4">
+      <Image unoptimized src="/images/WechatIMG4220.jpg" width={100} height={100} alt="logo"/>
+      <h1 className="mb-3">Mock Fun</h1>
+      <div className="flex mb-12 h-500">
+        <TextField
+          variant="outlined"
+          placeholder="Search Solana Token..."
+          className="mr-4"
+          size="medium"
+          onChange={e => setInputValue(e.target.value)}
+          value={inputValue}
+          sx={{ width: '350px' }} 
+        />
+        <Button onClick={search} variant="contained" color="primary" size="large">
+          Search
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {tokens.map((token, index) => (
+          token && <a href={'/' + token?.address} key={index}>
+            <Card variant="outlined" sx={{ width: 400 }} className="flex items-center p-3">
+            <Image unoptimized src={token.logoURI} alt={token.name} width={80} height={80} />
+            <CardContent>
+              <Typography variant="h6">{token.name}</Typography>
+              <Typography color="textSecondary">{token.symbol}</Typography>
+              <Typography color="textSecondary">{token.mcap}</Typography>
+            </CardContent>
+          </Card>
           </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        ))}
+      </div>
     </div>
   );
 }
